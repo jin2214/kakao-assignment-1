@@ -29,7 +29,7 @@ export default function TodoItem({ todo, onToggle, onDelete, onSaveEdit }) {
 
   if (isEditing) {
     return (
-      <li className="flex items-center gap-3 px-4 py-3 bg-white rounded-2xl shadow-sm">
+      <li className="flex items-center gap-3 px-4 py-3 bg-white rounded-2xl border border-gray-200 shadow-sm">
         {/* onBlur로 빈 공간 클릭 시 취소 구현.
             취소 버튼 클릭 시 blur+click으로 handleCancel이 2회 호출되는 부작용 있음.
             현재는 무해하나 handleCancel에 side effect 추가 시
@@ -40,7 +40,7 @@ export default function TodoItem({ todo, onToggle, onDelete, onSaveEdit }) {
           onChange={e => setEditText(e.target.value)}
           onKeyDown={handleKeyDown}
           onBlur={handleCancel}
-          className="flex-1 text-sm text-gray-900 border-b border-gray-300 outline-none px-1 pb-0.5 bg-transparent"
+          className="flex-1 text-sm text-gray-900 border-b border-gray-400 outline-none px-1 pb-0.5 bg-transparent"
         />
         <button
           onMouseDown={e => e.preventDefault()}
@@ -60,7 +60,7 @@ export default function TodoItem({ todo, onToggle, onDelete, onSaveEdit }) {
   }
 
   return (
-    <li className="flex items-center gap-3 px-4 py-3 bg-white rounded-2xl shadow-sm">
+    <li className="flex items-center gap-3 px-4 py-3 bg-white rounded-2xl border border-gray-200 shadow-sm">
       <button
         onClick={() => onToggle(todo.id)}
         className={`w-5 h-5 rounded-full border-2 flex-shrink-0 flex items-center justify-center transition-colors ${
@@ -81,14 +81,14 @@ export default function TodoItem({ todo, onToggle, onDelete, onSaveEdit }) {
       </span>
       <button
         onClick={handleEditStart}
-        className="text-gray-300 hover:text-gray-600 transition-colors text-sm"
+        className="w-8 h-8 flex items-center justify-center rounded-lg text-gray-300 hover:text-gray-600 hover:bg-gray-100 transition-colors text-base"
         aria-label="수정"
       >
         ✎
       </button>
       <button
         onClick={() => onDelete(todo.id)}
-        className="text-gray-300 hover:text-gray-600 transition-colors text-base leading-none"
+        className="w-8 h-8 flex items-center justify-center rounded-lg text-gray-300 hover:text-gray-600 hover:bg-gray-100 transition-colors text-sm"
         aria-label="삭제"
       >
         ✕

@@ -6,7 +6,7 @@ const TABS = [
 
 export default function FilterTabs({ currentFilter, onFilterChange }) {
   return (
-    <div className="flex gap-1 bg-gray-100 rounded-xl p-1">
+    <div className="flex gap-1 bg-gray-200 rounded-xl p-1">
       {TABS.map(tab => (
         <button
           key={tab.value}

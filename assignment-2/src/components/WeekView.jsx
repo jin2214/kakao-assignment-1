@@ -14,11 +14,11 @@ export default function WeekView({ weekStart, currentDate, todos, onDayClick, on
   })
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm px-3 py-3">
+    <div>
       <div className="flex items-center justify-between">
         <button
           onClick={onPrevWeek}
-          className="w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-700 transition-colors text-lg"
+          className="w-10 h-10 flex items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-700 transition-colors text-xl"
           aria-label="이전 주"
         >
           ‹
@@ -53,7 +53,7 @@ export default function WeekView({ weekStart, currentDate, todos, onDayClick, on
         </div>
         <button
           onClick={onNextWeek}
-          className="w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-700 transition-colors text-lg"
+          className="w-10 h-10 flex items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-700 transition-colors text-xl"
           aria-label="다음 주"
         >
           ›

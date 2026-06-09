@@ -96,7 +96,10 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-    <div className="max-w-md mx-auto py-10 px-4 flex flex-col gap-4">
+    <div className="max-w-md mx-auto py-10 px-4">
+    <div className="bg-white rounded-3xl shadow-lg border border-gray-200 px-6 py-6 flex flex-col gap-4">
+      <h1 className="text-lg font-bold text-gray-900 tracking-tight">Todo List</h1>
+      <DateNav currentDate={currentDate} onPrev={handlePrevDate} onNext={handleNextDate} />
       <WeekView
         weekStart={weekStart}
         currentDate={currentDate}
@@ -105,7 +108,6 @@ function App() {
         onPrevWeek={handlePrevWeek}
         onNextWeek={handleNextWeek}
       />
-      <DateNav currentDate={currentDate} onPrev={handlePrevDate} onNext={handleNextDate} />
       <TodoInput onAdd={handleAdd} />
       <Stats dayTodos={dayTodos} />
       <FilterTabs currentFilter={currentFilter} onFilterChange={handleFilterChange} />
@@ -116,6 +118,7 @@ function App() {
         onDelete={handleDelete}
         onSaveEdit={handleSaveEdit}
       />
+    </div>
     </div>
     </div>
   )

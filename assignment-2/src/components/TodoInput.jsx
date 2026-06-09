@@ -26,7 +26,7 @@ export default function TodoInput({ onAdd }) {
           type="text"
           value={text}
           maxLength={100}
-          placeholder="할 일을 입력하세요..."
+          placeholder="할 일"
           onChange={(e) => {
             setText(e.target.value)
             setError(false)
@@ -35,7 +35,7 @@ export default function TodoInput({ onAdd }) {
           className={`flex-1 px-4 py-2.5 text-sm rounded-xl border bg-white outline-none transition-colors placeholder:text-gray-300 text-gray-900
             ${error
               ? 'border-gray-400 focus:border-gray-600'
-              : 'border-gray-200 focus:border-gray-400'
+              : 'border-gray-300 focus:border-gray-500'
             }`}
         />
         <button
