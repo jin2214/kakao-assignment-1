@@ -5,6 +5,7 @@ import TodoList from './components/TodoList'
 import FilterTabs from './components/FilterTabs'
 import Stats from './components/Stats'
 import DateNav from './components/DateNav'
+import WeekView from './components/WeekView'
 
 function App() {
   const [todos, setTodos] = useState(
@@ -95,6 +96,14 @@ function App() {
 
   return (
     <div className="max-w-md mx-auto mt-8 px-4 flex flex-col gap-4">
+      <WeekView
+        weekStart={weekStart}
+        currentDate={currentDate}
+        todos={todos}
+        onDayClick={handleDayClick}
+        onPrevWeek={handlePrevWeek}
+        onNextWeek={handleNextWeek}
+      />
       <DateNav currentDate={currentDate} onPrev={handlePrevDate} onNext={handleNextDate} />
       <TodoInput onAdd={handleAdd} />
       <Stats dayTodos={dayTodos} />
