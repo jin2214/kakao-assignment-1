@@ -1,6 +1,6 @@
 import { formatDateLabel, getToday, dateToString } from '../utils/dateUtils'
 
-export default function DateNav({ currentDate, onPrev, onNext }) {
+export default function DateNav({ currentDate, onPrev, onNext, onToday }) {
   const isToday = dateToString(currentDate) === dateToString(getToday())
 
   return (
@@ -16,11 +16,20 @@ export default function DateNav({ currentDate, onPrev, onNext }) {
         <span className="text-base font-semibold text-gray-900">
           {formatDateLabel(currentDate)}
         </span>
-        {isToday && (
-          <span className="text-xs bg-gray-900 text-white px-2 py-0.5 rounded-full font-medium">
-            오늘
-          </span>
-        )}
+        <button
+          onClick={isToday ? undefined : onToday}
+          className={`w-7 h-7 flex items-center justify-center rounded-lg transition-colors ${
+            isToday
+              ? 'text-gray-900 cursor-default'
+              : 'text-gray-300 hover:bg-gray-100 hover:text-gray-700'
+          }`}
+          aria-label="오늘로"
+        >
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-4 h-4">
+            <path d="M1.5 7.5L8 2l6.5 5.5" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M3 6.5V13.5a.5.5 0 00.5.5H6v-3.5h4V14h2.5a.5.5 0 00.5-.5V6.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </button>
       </div>
       <button
         onClick={onNext}

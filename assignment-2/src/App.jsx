@@ -14,8 +14,22 @@ function App() {
     () => JSON.parse(localStorage.getItem('todos')) || []
   )
   const [currentFilter, setCurrentFilter] = useState('all')
-  const [currentDate, setCurrentDate] = useState(getToday)
-  const [weekStart, setWeekStart] = useState(() => getMondayOfWeek(getToday()))
+  const [currentDate, setCurrentDate] = useState(() => {
+    const saved = localStorage.getItem('currentDate')
+    if (saved) {
+      const [y, m, d] = saved.split('-').map(Number)
+      return new Date(y, m - 1, d)
+    }
+    return getToday()
+  })
+  const [weekStart, setWeekStart] = useState(() => {
+    const saved = localStorage.getItem('weekStart')
+    if (saved) {
+      const [y, m, d] = saved.split('-').map(Number)
+      return new Date(y, m - 1, d)
+    }
+    return getMondayOfWeek(getToday())
+  })
 
   const [cardPos, setCardPos] = useState(() => ({
     x: Math.max(0, (window.innerWidth - CARD_WIDTH) / 2),
@@ -55,6 +69,14 @@ function App() {
   useEffect(() => {
     localStorage.setItem('todos', JSON.stringify(todos))
   }, [todos])
+
+  useEffect(() => {
+    localStorage.setItem('weekStart', dateToString(weekStart))
+  }, [weekStart])
+
+  useEffect(() => {
+    localStorage.setItem('currentDate', dateToString(currentDate))
+  }, [currentDate])
 
   function handleAdd(text) {
     const newTodo = {
@@ -123,6 +145,13 @@ function App() {
     setCurrentFilter(filter)
   }
 
+  function handleToday() {
+    const today = getToday()
+    setCurrentDate(today)
+    setWeekStart(getMondayOfWeek(today))
+    setCurrentFilter('all')
+  }
+
   const dateStr = dateToString(currentDate)
   const dayTodos = todos.filter(t => t.date === dateStr)
   const filteredTodos = dayTodos.filter(t => {
@@ -160,7 +189,7 @@ function App() {
           >
             Todo List ⠿
           </h1>
-          <DateNav currentDate={currentDate} onPrev={handlePrevDate} onNext={handleNextDate} />
+          <DateNav currentDate={currentDate} onPrev={handlePrevDate} onNext={handleNextDate} onToday={handleToday} />
           <WeekView
             weekStart={weekStart}
             currentDate={currentDate}
