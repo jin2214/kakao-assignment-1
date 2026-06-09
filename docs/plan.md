@@ -29,6 +29,7 @@
 - [ ] Step 8: DateNav 컴포넌트 (일간 뷰)
 - [ ] Step 9: useEffect로 localStorage 연동
 - [ ] Step 10: WeekView 컴포넌트 (주간 뷰)
+- [ ] Step 11: 전체 UI/UX 개선 (Step 10 완료 후)
 
 ---
 
@@ -367,6 +368,18 @@ useEffect(() => {
 ```bash
 rm app.js index.html style.css
 ```
+
+---
+
+## Step 11 — 전체 UI/UX 개선
+
+### 작업 예정 내용
+- 버튼 크기 및 클릭 영역 개선 (DateNav 이전/다음 버튼 등)
+- 전체 레이아웃 및 간격 조정
+- 기타 UX 불편사항 수정
+
+### 진행 조건
+- Step 10 완료 후 진행
 
 ---
 
