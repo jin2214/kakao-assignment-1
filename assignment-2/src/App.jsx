@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { getToday, getMondayOfWeek, dateToString, shiftDate, getWeekdayOffset } from './utils/dateUtils'
 import TodoInput from './components/TodoInput'
 import TodoList from './components/TodoList'
+import FilterTabs from './components/FilterTabs'
 
 function App() {
   const [todos, setTodos] = useState(
@@ -93,6 +94,7 @@ function App() {
   return (
     <div className="max-w-md mx-auto mt-8 px-4 flex flex-col gap-4">
       <TodoInput onAdd={handleAdd} />
+      <FilterTabs currentFilter={currentFilter} onFilterChange={handleFilterChange} />
       <TodoList
         todos={filteredTodos}
         onToggle={handleToggle}
