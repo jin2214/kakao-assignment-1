@@ -44,8 +44,8 @@ export default function WeekView({ weekStart, currentDate, todos, onDayClick, on
                 }`}>
                   {date.getDate()}
                 </span>
-                <span className={`text-xs ${count > 0 ? 'text-blue-400' : 'text-transparent'}`}>
-                  {count > 0 ? count : '0'}
+                <span className="text-xs text-blue-400">
+                  {count > 0 ? count : ' '}
                 </span>
               </button>
             )
