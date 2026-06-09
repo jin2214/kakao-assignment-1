@@ -3,6 +3,7 @@ import { getToday, getMondayOfWeek, dateToString, shiftDate, getWeekdayOffset } 
 import TodoInput from './components/TodoInput'
 import TodoList from './components/TodoList'
 import FilterTabs from './components/FilterTabs'
+import Stats from './components/Stats'
 
 function App() {
   const [todos, setTodos] = useState(
@@ -94,9 +95,11 @@ function App() {
   return (
     <div className="max-w-md mx-auto mt-8 px-4 flex flex-col gap-4">
       <TodoInput onAdd={handleAdd} />
+      <Stats dayTodos={dayTodos} />
       <FilterTabs currentFilter={currentFilter} onFilterChange={handleFilterChange} />
       <TodoList
         todos={filteredTodos}
+        currentFilter={currentFilter}
         onToggle={handleToggle}
         onDelete={handleDelete}
         onSaveEdit={handleSaveEdit}
