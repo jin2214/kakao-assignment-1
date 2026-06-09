@@ -15,7 +15,7 @@ export default function TodoInput({ onAdd }) {
   }
 
   function handleKeyDown(e) {
-    if (e.isComposing) return
+    if (e.nativeEvent.isComposing) return
     if (e.key === 'Enter') handleAdd()
   }
 
