@@ -62,8 +62,12 @@ export default defineConfig({
 @import "tailwindcss";
 ```
 
-### 완료 확인
-`npm run dev` → `localhost:5173` 접속해서 Vite 기본 화면 확인
+### 구현 체크리스트
+- [ ] Vite + React 프로젝트 생성
+- [ ] Tailwind CSS 설치 및 설정 (vite.config.js, index.css)
+
+### 브라우저 테스트
+- [ ] `localhost:5173` 접속 시 Vite 기본 화면 표시
 
 ---
 
@@ -93,6 +97,11 @@ export function getMondayOfWeek(date) { ... }
 export function getWeekdayOffset(date) { ... }
 export function formatDateLabel(date) { ... }
 ```
+
+### 구현 체크리스트
+- [ ] utils/, components/ 폴더 생성
+- [ ] dateUtils.js에 날짜 관련 함수 6개 이식
+- [ ] 컴포넌트 파일 7개 플레이스홀더 생성
 
 ---
 
@@ -131,6 +140,11 @@ useEffect(() => {
 - `handleDayClick(dateStr)` — 주간 날짜 클릭
 - `handleFilterChange(filter)` — 필터 탭 변경
 
+### 구현 체크리스트
+- [ ] `todos` / `currentFilter` / `currentDate` / `weekStart` 상태 4개 선언
+- [ ] `useEffect`로 todos 변경 시 localStorage 자동 저장
+- [ ] 핸들러 8개 작성 (추가, 토글, 삭제, 수정, 날짜 이동, 주 이동, 날짜 클릭, 필터)
+
 ---
 
 ## Step 3 — TodoInput 컴포넌트
@@ -145,6 +159,19 @@ useEffect(() => {
 ```jsx
 <TodoInput onAdd={handleAdd} />
 ```
+
+### 구현 체크리스트
+- [ ] 입력창 + 추가 버튼 컴포넌트 생성
+- [ ] 빈 값 검증 후 에러 메시지 표시/숨김
+- [ ] Enter 키 지원 + 한글 IME(`isComposing`) 처리
+- [ ] 입력 중 에러 자동 숨김
+
+### 브라우저 테스트
+- [ ] 입력창과 추가 버튼이 보인다
+- [ ] 빈 값으로 추가 클릭 → "할 일을 입력해주세요." 표시
+- [ ] 에러 뜬 상태에서 타이핑 → 에러 사라짐
+- [ ] 텍스트 입력 후 추가 → 입력창 초기화
+- [ ] Enter 키로 추가 동작
 
 ---
 
@@ -166,6 +193,15 @@ useEffect(() => {
 - 수정 버튼 → Step 5에서 구현
 - 삭제 버튼
 
+### 구현 체크리스트
+- [ ] TodoList: todos 배열을 받아 목록으로 렌더링
+- [ ] TodoItem: 텍스트 표시, 완료 토글(취소선), 삭제 버튼
+
+### 브라우저 테스트
+- [ ] 할 일 추가 시 목록에 바로 표시
+- [ ] 완료 버튼 클릭 → 취소선 표시
+- [ ] 삭제 버튼 클릭 → 목록에서 제거
+
 ---
 
 ## Step 5 — TodoItem 수정 모드 (인라인 Edit)
@@ -176,6 +212,17 @@ useEffect(() => {
 - 저장: 빈 값이면 원상복구, 아니면 `onSaveEdit` 호출
 - 취소: `isEditing = false`
 - Enter / Escape 키 지원
+
+### 구현 체크리스트
+- [ ] 수정 버튼 클릭 시 텍스트 → 입력창으로 전환
+- [ ] Enter로 저장, Escape로 취소
+- [ ] 빈 값 저장 시 원래 텍스트로 복구
+
+### 브라우저 테스트
+- [ ] 수정 버튼 클릭 → 텍스트가 입력창으로 바뀜
+- [ ] 텍스트 수정 후 저장 → 변경된 내용 표시
+- [ ] 빈 값으로 저장 → 원래 텍스트 유지
+- [ ] Escape → 수정 취소
 
 ---
 
@@ -192,6 +239,16 @@ useEffect(() => {
 - 완료 (`completed`)
 - 선택된 탭 시각적 강조
 
+### 구현 체크리스트
+- [ ] 전체 / 진행 중 / 완료 탭 3개 렌더링
+- [ ] 선택된 탭 시각적 강조
+
+### 브라우저 테스트
+- [ ] 탭 3개 표시
+- [ ] 탭 클릭 시 해당 탭 강조
+- [ ] "진행 중" 탭 → 완료 안 된 항목만 표시
+- [ ] "완료" 탭 → 완료된 항목만 표시
+
 ---
 
 ## Step 7 — Stats + 빈 상태 메시지
@@ -207,6 +264,15 @@ useEffect(() => {
   - `all`: "이 날의 할 일이 없어요."
   - `active`: "진행 중인 할 일이 없어요."
   - `completed`: "완료된 할 일이 없어요."
+
+### 구현 체크리스트
+- [ ] Stats: 선택 날짜의 전체 / 완료 카운트 표시
+- [ ] TodoList: 항목 없을 때 필터별 안내 문구 표시
+
+### 브라우저 테스트
+- [ ] "전체 N / 완료 N" 통계 표시
+- [ ] 할 일 없을 때 "이 날의 할 일이 없어요." 표시
+- [ ] 필터 탭에 따라 빈 상태 메시지 다르게 표시
 
 ---
 
@@ -226,6 +292,17 @@ useEffect(() => {
 - 이전/다음 날짜 버튼
 - 오늘 날짜일 때 "오늘" 배지 표시
 
+### 구현 체크리스트
+- [ ] 현재 날짜 "YYYY년 M월 D일 (요일)" 형식으로 표시
+- [ ] 이전 / 다음 날짜 이동 버튼
+- [ ] 오늘 날짜일 때 "오늘" 배지 표시
+
+### 브라우저 테스트
+- [ ] 날짜 레이블 표시
+- [ ] 오늘 날짜일 때 "오늘" 배지 표시
+- [ ] 이전 / 다음 버튼으로 날짜 이동
+- [ ] 날짜 바뀌면 Todo 목록도 해당 날짜 기준으로 변경
+
 ---
 
 ## Step 9 — useEffect로 localStorage 연동
@@ -240,6 +317,14 @@ useEffect(() => {
 
 - todos 배열이 바뀔 때마다 자동으로 localStorage에 저장
 - 초기 로드는 useState lazy initializer에서 처리
+
+### 구현 체크리스트
+- [ ] `useEffect`로 todos 변경 시 자동 저장
+- [ ] 앱 시작 시 localStorage에서 todos 불러오기
+
+### 브라우저 테스트
+- [ ] 할 일 추가 후 새로고침 → 목록 유지
+- [ ] DevTools → Application → Local Storage에 todos 데이터 확인
 
 ---
 
@@ -263,6 +348,25 @@ useEffect(() => {
 - 오늘 날짜 / 선택 날짜 스타일 구분
 - 이전/다음 주 버튼
 - 날짜 클릭 시 `currentDate` 변경
+
+### 구현 체크리스트
+- [ ] 월~일 7개 날짜 버튼 렌더링
+- [ ] 각 날짜 아래 해당 날짜의 Todo 개수 배지
+- [ ] 오늘 날짜 / 선택된 날짜 스타일 구분
+- [ ] 이전 / 다음 주 이동 버튼
+
+### 브라우저 테스트
+- [ ] 주간 달력 7일 표시
+- [ ] 날짜 클릭 → 해당 날짜로 이동 + Todo 목록 변경
+- [ ] 이전 / 다음 주 버튼 동작
+- [ ] 오늘 날짜 강조 표시
+- [ ] Todo 있는 날짜에 개수 배지 표시
+
+### 완료 후 정리
+모든 기능 동작 확인 후 1차 과제 파일 삭제:
+```bash
+rm app.js index.html style.css
+```
 
 ---
 
