@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { getToday, getMondayOfWeek, dateToString, shiftDate, getWeekdayOffset } from './utils/dateUtils'
+import TodoInput from './components/TodoInput'
 
 function App() {
   const [todos, setTodos] = useState(
@@ -80,7 +81,11 @@ function App() {
     setCurrentFilter(filter)
   }
 
-  return <div>App works</div>
+  return (
+    <div>
+      <TodoInput onAdd={handleAdd} />
+    </div>
+  )
 }
 
 export default App
