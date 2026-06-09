@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { getToday, getMondayOfWeek, dateToString, shiftDate, getWeekdayOffset } from './utils/dateUtils'
 import TodoInput from './components/TodoInput'
+import TodoList from './components/TodoList'
 
 function App() {
   const [todos, setTodos] = useState(
@@ -81,9 +82,23 @@ function App() {
     setCurrentFilter(filter)
   }
 
+  const dateStr = dateToString(currentDate)
+  const dayTodos = todos.filter(t => t.date === dateStr)
+  const filteredTodos = dayTodos.filter(t => {
+    if (currentFilter === 'active') return !t.completed
+    if (currentFilter === 'completed') return t.completed
+    return true
+  })
+
   return (
-    <div>
+    <div className="max-w-md mx-auto mt-8 px-4 flex flex-col gap-4">
       <TodoInput onAdd={handleAdd} />
+      <TodoList
+        todos={filteredTodos}
+        onToggle={handleToggle}
+        onDelete={handleDelete}
+        onSaveEdit={handleSaveEdit}
+      />
     </div>
   )
 }
