@@ -6,15 +6,15 @@ const TABS = [
 
 export default function FilterTabs({ currentFilter, onFilterChange }) {
   return (
-    <div className="flex gap-1 bg-gray-100 rounded-lg p-1">
+    <div className="flex gap-1 bg-gray-100 rounded-xl p-1">
       {TABS.map(tab => (
         <button
           key={tab.value}
           onClick={() => onFilterChange(tab.value)}
-          className={`flex-1 py-1.5 text-sm rounded-md transition-colors ${
+          className={`flex-1 py-1.5 text-sm rounded-lg transition-colors ${
             currentFilter === tab.value
-              ? 'bg-white text-gray-900 font-medium shadow-sm'
-              : 'text-gray-500 hover:text-gray-700'
+              ? 'bg-white text-gray-900 font-semibold shadow-sm'
+              : 'text-gray-400 hover:text-gray-600'
           }`}
         >
           {tab.label}

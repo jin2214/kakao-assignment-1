@@ -95,7 +95,8 @@ function App() {
   })
 
   return (
-    <div className="max-w-md mx-auto mt-8 px-4 flex flex-col gap-4">
+    <div className="min-h-screen bg-gray-50">
+    <div className="max-w-md mx-auto py-10 px-4 flex flex-col gap-4">
       <WeekView
         weekStart={weekStart}
         currentDate={currentDate}
@@ -115,6 +116,7 @@ function App() {
         onDelete={handleDelete}
         onSaveEdit={handleSaveEdit}
       />
+    </div>
     </div>
   )
 }

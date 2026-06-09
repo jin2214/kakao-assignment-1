@@ -29,7 +29,7 @@ export default function TodoItem({ todo, onToggle, onDelete, onSaveEdit }) {
 
   if (isEditing) {
     return (
-      <li className="flex items-center gap-3 p-3 bg-white rounded-lg shadow-sm">
+      <li className="flex items-center gap-3 px-4 py-3 bg-white rounded-2xl shadow-sm">
         {/* onBlur로 빈 공간 클릭 시 취소 구현.
             취소 버튼 클릭 시 blur+click으로 handleCancel이 2회 호출되는 부작용 있음.
             현재는 무해하나 handleCancel에 side effect 추가 시
@@ -40,18 +40,18 @@ export default function TodoItem({ todo, onToggle, onDelete, onSaveEdit }) {
           onChange={e => setEditText(e.target.value)}
           onKeyDown={handleKeyDown}
           onBlur={handleCancel}
-          className="flex-1 text-sm border-b border-blue-400 outline-none px-1"
+          className="flex-1 text-sm text-gray-900 border-b border-gray-300 outline-none px-1 pb-0.5 bg-transparent"
         />
         <button
           onMouseDown={e => e.preventDefault()}
           onClick={handleSave}
-          className="text-blue-500 hover:text-blue-700 text-sm font-medium"
+          className="text-gray-700 hover:text-gray-900 text-sm font-medium transition-colors"
         >
           저장
         </button>
         <button
           onClick={handleCancel}
-          className="text-gray-400 hover:text-gray-600 text-sm"
+          className="text-gray-300 hover:text-gray-500 text-sm transition-colors"
         >
           취소
         </button>
@@ -60,29 +60,35 @@ export default function TodoItem({ todo, onToggle, onDelete, onSaveEdit }) {
   }
 
   return (
-    <li className="flex items-center gap-3 p-3 bg-white rounded-lg shadow-sm">
+    <li className="flex items-center gap-3 px-4 py-3 bg-white rounded-2xl shadow-sm">
       <button
         onClick={() => onToggle(todo.id)}
-        className={`w-6 h-6 rounded-full border-2 flex-shrink-0 transition-colors ${
+        className={`w-5 h-5 rounded-full border-2 flex-shrink-0 flex items-center justify-center transition-colors ${
           todo.completed
-            ? 'bg-green-500 border-green-500'
-            : 'border-gray-300 hover:border-green-400'
+            ? 'bg-gray-900 border-gray-900'
+            : 'border-gray-300 hover:border-gray-500'
         }`}
         aria-label={todo.completed ? '완료 취소' : '완료'}
-      />
-      <span className={`flex-1 text-sm ${todo.completed ? 'line-through text-gray-400' : 'text-gray-800'}`}>
+      >
+        {todo.completed && (
+          <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 10 8" stroke="currentColor" strokeWidth={2.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M1 4l3 3 5-6" />
+          </svg>
+        )}
+      </button>
+      <span className={`flex-1 text-sm ${todo.completed ? 'line-through text-gray-300' : 'text-gray-800'}`}>
         {todo.text}
       </span>
       <button
         onClick={handleEditStart}
-        className="text-gray-400 hover:text-blue-500 transition-colors text-sm"
+        className="text-gray-300 hover:text-gray-600 transition-colors text-sm"
         aria-label="수정"
       >
         ✎
       </button>
       <button
         onClick={() => onDelete(todo.id)}
-        className="text-gray-400 hover:text-red-500 transition-colors text-lg leading-none"
+        className="text-gray-300 hover:text-gray-600 transition-colors text-base leading-none"
         aria-label="삭제"
       >
         ✕

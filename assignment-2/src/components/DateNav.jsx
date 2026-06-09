@@ -4,27 +4,27 @@ export default function DateNav({ currentDate, onPrev, onNext }) {
   const isToday = dateToString(currentDate) === dateToString(getToday())
 
   return (
-    <div className="flex items-center justify-between">
+    <div className="flex items-center justify-between px-1">
       <button
         onClick={onPrev}
-        className="p-2 text-gray-500 hover:text-gray-800 transition-colors"
+        className="w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:bg-gray-200 hover:text-gray-700 transition-colors text-lg"
         aria-label="이전 날짜"
       >
         ‹
       </button>
       <div className="flex items-center gap-2">
-        <span className="text-base font-medium text-gray-800">
+        <span className="text-base font-semibold text-gray-900">
           {formatDateLabel(currentDate)}
         </span>
         {isToday && (
-          <span className="text-xs bg-blue-500 text-white px-2 py-0.5 rounded-full">
+          <span className="text-xs bg-gray-900 text-white px-2 py-0.5 rounded-full font-medium">
             오늘
           </span>
         )}
       </div>
       <button
         onClick={onNext}
-        className="p-2 text-gray-500 hover:text-gray-800 transition-colors"
+        className="w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:bg-gray-200 hover:text-gray-700 transition-colors text-lg"
         aria-label="다음 날짜"
       >
         ›

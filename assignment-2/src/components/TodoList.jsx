@@ -9,7 +9,7 @@ const EMPTY_MESSAGE = {
 export default function TodoList({ todos, currentFilter, onToggle, onDelete, onSaveEdit }) {
   if (todos.length === 0) {
     return (
-      <p className="text-center text-sm text-gray-400 py-8">
+      <p className="text-center text-sm text-gray-300 py-10">
         {EMPTY_MESSAGE[currentFilter]}
       </p>
     )

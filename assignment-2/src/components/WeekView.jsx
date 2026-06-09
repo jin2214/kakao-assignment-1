@@ -14,11 +14,11 @@ export default function WeekView({ weekStart, currentDate, todos, onDayClick, on
   })
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="bg-white rounded-2xl shadow-sm px-3 py-3">
       <div className="flex items-center justify-between">
         <button
           onClick={onPrevWeek}
-          className="p-2 text-gray-500 hover:text-gray-800 transition-colors"
+          className="w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-700 transition-colors text-lg"
           aria-label="이전 주"
         >
           ‹
@@ -34,18 +34,18 @@ export default function WeekView({ weekStart, currentDate, todos, onDayClick, on
                 onClick={() => onDayClick(dateStr)}
                 className="flex flex-col items-center gap-1 w-9"
               >
-                <span className="text-xs text-gray-400">{label}</span>
+                <span className="text-xs text-gray-400 font-medium">{label}</span>
                 <span className={`w-8 h-8 flex items-center justify-center rounded-full text-sm transition-colors ${
                   isSelected
-                    ? 'bg-blue-500 text-white font-medium'
+                    ? 'bg-gray-900 text-white font-semibold'
                     : isToday
-                    ? 'border-2 border-blue-400 text-blue-500 font-medium'
-                    : 'text-gray-700 hover:bg-gray-100'
+                    ? 'border-2 border-gray-900 text-gray-900 font-semibold'
+                    : 'text-gray-600 hover:bg-gray-100'
                 }`}>
                   {date.getDate()}
                 </span>
-                <span className="text-xs text-blue-400">
-                  {count > 0 ? count : ' '}
+                <span className="text-xs text-gray-400">
+                  {count > 0 ? count : ' '}
                 </span>
               </button>
             )
@@ -53,7 +53,7 @@ export default function WeekView({ weekStart, currentDate, todos, onDayClick, on
         </div>
         <button
           onClick={onNextWeek}
-          className="p-2 text-gray-500 hover:text-gray-800 transition-colors"
+          className="w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-700 transition-colors text-lg"
           aria-label="다음 주"
         >
           ›
