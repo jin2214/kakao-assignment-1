@@ -3,7 +3,7 @@ import NewTodoForm from "./NewTodoForm";
 
 export default function NewTodoPage() {
   return (
-    <main className="max-w-md mx-auto px-4 py-10">
+    <main className="w-full max-w-md mx-auto px-4 py-10">
       <div className="flex items-center gap-3 mb-6">
         <Link href="/todos" className="text-gray-400 hover:text-gray-600 text-sm">
           ← 목록으로

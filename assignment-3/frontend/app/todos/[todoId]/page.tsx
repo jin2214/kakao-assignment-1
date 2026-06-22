@@ -15,7 +15,7 @@ export default async function TodoDetailPage({
   }
 
   return (
-    <main className="max-w-md mx-auto px-4 py-10">
+    <main className="w-full max-w-md mx-auto px-4 py-10">
       <Link href="/todos" className="text-sm text-gray-400 hover:text-gray-600">
         ← 목록으로
       </Link>

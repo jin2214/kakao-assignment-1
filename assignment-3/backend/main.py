@@ -3,13 +3,13 @@ from dotenv import load_dotenv
 load_dotenv(".env.local")
 
 import os
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import create_engine, select, Integer, String, DateTime
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, sessionmaker, Session
 from pydantic import BaseModel, field_validator
 from datetime import datetime, timezone
-from typing import Optional
+from typing import Optional, Literal
 
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./todos.db")
 FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
@@ -85,8 +85,16 @@ def read_root():
 
 
 @app.get("/todos", response_model=list[TodoResponse])
-def get_todos(db: Session = Depends(get_db)):
-    return db.execute(select(Todo)).scalars().all()
+def get_todos(
+    filter: Optional[Literal["all", "active", "completed"]] = Query(None),
+    db: Session = Depends(get_db),
+):
+    stmt = select(Todo)
+    if filter == "active":
+        stmt = stmt.where(Todo.completed == False)
+    elif filter == "completed":
+        stmt = stmt.where(Todo.completed == True)
+    return db.execute(stmt).scalars().all()
 
 
 @app.get("/todos/{todo_id}", response_model=TodoResponse)

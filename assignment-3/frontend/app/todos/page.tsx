@@ -1,12 +1,18 @@
 import Link from "next/link";
 import { getTodos } from "@/app/actions";
 import TodoItem from "./TodoItem";
+import FilterTabs from "./FilterTabs";
 
-export default async function TodosPage() {
-  const todos = await getTodos();
+export default async function TodosPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ filter?: string }>;
+}) {
+  const { filter } = await searchParams;
+  const todos = await getTodos(filter);
 
   return (
-    <main className="max-w-md mx-auto px-4 py-10">
+    <main className="w-full max-w-md mx-auto px-4 py-10">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-xl font-bold text-gray-900">할 일 목록</h1>
         <Link
@@ -16,6 +22,8 @@ export default async function TodosPage() {
           추가
         </Link>
       </div>
+
+      <FilterTabs currentFilter={filter ?? "all"} />
 
       {todos.length === 0 ? (
         <p className="text-center text-sm text-gray-300 py-10">할 일이 없어요.</p>
