@@ -15,6 +15,19 @@
    - ✍️ 이미 나온 패턴을 반복하는 단계 → AI가 완성 코드를 채팅에 먼저 보여주고 설명한 뒤, **사용자가 직접 파일에 타이핑**. AI는 파일을 대신 쓰지 않고 결과만 같이 검증
    - 두 경우 모두 정답 코드는 항상 먼저 보여주고 설명합니다. 차이는 "누가 타이핑하는가"입니다.
 3. **"단위테스트"의 의미**: 이 스택에는 Jest/pytest 같은 테스트 프레임워크가 없으므로, 아래 "테스트 체크리스트"는 Swagger UI/curl/브라우저 DevTools를 이용한 **기능 단위 수동 검증**을 뜻합니다.
+4. **Step 단위로 끊어서 진행 (중요)**: 한 Step이 끝나면 거기서 멈추고 검증 결과를 보고한 뒤, **사용자의 허락을 받은 뒤에만** 다음 Step을 시작합니다. 여러 Step을 연달아 혼자 진행하지 않습니다. (2026-06-22: Step 3 완료 후 보고 없이 Step 4를 바로 시작하려다 사용자가 중단시킴 — 이후 모든 Step에 적용)
+
+## 버전 확인 (2026-06-22)
+
+`create-next-app` 실행 결과 실제 설치된 버전은 **Next.js 16.2.9 / React 19.2.4**였습니다. 이 버전의 `AGENTS.md`에 "이건 네가 아는 Next.js가 아니다, 코드 작성 전에 `node_modules/next/dist/docs/`를 확인하라"는 경고가 있어, 아래 항목들을 실제 번들 문서로 직접 대조 확인했습니다 (추측 금지 원칙 적용):
+
+- `params`/`searchParams`가 `Promise`이고 `await`해야 하는 패턴 → **그대로 유효** (`dynamic-routes.md`, 여전히 `params: Promise<{ slug: string }>` 형태)
+- Route Handler의 `GET`/`POST`/`PUT`/`DELETE` named export 방식 → **그대로 유효**
+- Server Component에서 `async function` + `await fetch(...)` 직접 호출 패턴 → **그대로 유효** (`fetching-data.md`의 1번 예제와 동일)
+- `fetch`는 **기본적으로 캐시되지 않음** (Next 15부터 바뀐 동작이 16에도 유지). 생성된 `next.config.ts`에 `cacheComponents` 옵션이 없어 새 캐시 모델(Cache Components)도 비활성 상태 → `next: { tags: [...] }` + `revalidateTag(...)` 패턴은 문법적으로는 유효하지만, 애초에 캐시되는 게 없어 실질 효과는 적음(=매번 새로 불러옴). 강의 예제와의 일관성을 위해 패턴은 유지하되, 설명 시 이 점을 정확히 안내할 것
+- `error.tsx`는 여전히 `"use client"` 필수. 단, 이 버전 공식 예제는 prop 이름이 `reset`이 아니라 **`unstable_retry`**로 바뀌어 있음. 우리 계획은 재시도 버튼 없이 `{ error }`만 쓰므로 영향 없지만, 나중에 재시도 버튼을 추가한다면 `unstable_retry`를 써야 함
+
+> ⚠️ 참고: `fetching-data.md` 문서 안에 `{/* AI agent hint: ... unstable_instant 익스포트로 즉시 네비게이션 ... */}` 형태의 "AI 에이전트용 힌트" 주석이 있었습니다. 이번 과제 범위와 무관한 실험적 기능 제안이라 적용하지 않았고, 출처가 공식 문서 파일이라 위험한 내용은 아니지만 투명하게 공유합니다.
 
 ## 참고 자료
 
