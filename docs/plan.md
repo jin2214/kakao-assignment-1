@@ -75,9 +75,9 @@
 | 4 | CRUD 엔드포인트 + CORS | 3. FastAPI CRUD API (엔드포인트 부분, 여기까지 끝나야 3번 완료) | ✅ |
 | 5 | Todo 목록 페이지 (Server Component) + actions.ts | 4. Next.js 페이지 + 5. API Route 연동 (목록 조회 부분) | ⬜ |
 | 6 | Todo 생성 (Client Component + route.ts POST) | 4 + 5 (생성 부분) | ⬜ |
-| 7 | 완료 토글 + 삭제 (TodoItem) | 4 + 5 (수정/삭제 부분) | ⬜ |
-| 8 | 수정 페이지 ([todoId]/page.tsx) | 4 + 5 (수정 페이지 부분) | ⬜ |
-| 9 | loading.tsx / error.tsx | 4. Next.js 페이지 (로딩/에러 화면) | ⬜ |
+| 7 | 완료 토글 + 삭제 (TodoItem) | 4 + 5 (수정/삭제 부분) | ✅ |
+| 8 | 수정 페이지 ([todoId]/page.tsx) | 4 + 5 (수정 페이지 부분) | ✅ |
+| 9 | loading.tsx / error.tsx | 4. Next.js 페이지 (로딩/에러 화면) | ✅ |
 | 10 | 환경변수 분리 | 6. 환경변수 설정 | ⬜ |
 | 11 | [도전1] 상태 필터링 | 도전과제 1 | ⬜ |
 | 12 | [도전2] 검색 + 디바운스 | 도전과제 2 | ⬜ |
@@ -587,17 +587,17 @@ export default function TodoInput() {
   );
 }
 ```
-`app/todos/page.tsx`에 `<TodoInput />`을 목록 위에 추가하고, 상단에 `import TodoInput from "./TodoInput";` 추가. `npm install axios` 필요.
+> ⚠️ **2026-06-22 정정**: 처음엔 위 `TodoInput`을 `app/todos/page.tsx`(목록 페이지) 안에 그대로 끼워 넣었는데, 이건 안내문이 명시한 디렉토리 구조(`app/todos/new/page.tsx`라는 **별도 생성 페이지**)와 맞지 않는 실수였습니다. 2차 과제(React/Vite, 단일 페이지였음)의 습관을 그대로 따라가서 생긴 오류로, 안내문 구조를 다시 체크하지 않고 설계한 게 원인. 실제로는 `app/todos/new/page.tsx`(Server Component) + `app/todos/new/NewTodoForm.tsx`(Client Component, 위 코드와 거의 동일하되 성공 시 `router.push("/todos")`로 목록으로 이동)로 분리했고, `app/todos/page.tsx`의 인라인 입력창과 `TodoInput.tsx`는 제거했습니다. `route.ts`(POST 핸들러)는 그대로 재사용.
 
 ### 구현 체크리스트
 - [ ] `npm install axios`
 - [ ] `app/api/todos/route.ts`에 `POST` 핸들러 작성 (FastAPI로 프록시)
-- [ ] `app/todos/TodoInput.tsx` 작성 (입력값 검증 + axios 요청)
-- [ ] `app/todos/page.tsx`에 `<TodoInput />` 추가
+- [ ] `app/todos/new/page.tsx`(Server Component) + `app/todos/new/NewTodoForm.tsx`(Client Component, 입력값 검증 + axios 요청 + 성공 시 `/todos`로 이동) 작성
+- [ ] `app/todos/page.tsx`의 "추가" 버튼이 `/todos/new`로 정상 연결되는지 확인 (인라인 입력창은 두지 않음)
 
 ### 코드 설명 체크리스트
 - [ ] `"use client"`: 이 파일이 브라우저에서 실행되며 `useState`/이벤트 핸들러를 쓸 수 있게 함. Server Component는 이런 걸 못 함
-- [ ] Server Component(`page.tsx`)가 Client Component(`TodoInput`)를 자식으로 렌더링하는 건 가능하지만, 반대(Client가 Server를 import)는 안 됨
+- [ ] Server Component(`new/page.tsx`)가 Client Component(`NewTodoForm`)를 자식으로 렌더링하는 건 가능하지만, 반대(Client가 Server를 import)는 안 됨
 - [ ] `axios.post("/api/todos", ...)`: FastAPI(`:8000`)가 아니라 **우리 Next.js 서버 자신**(`:3000`)의 `/api/todos`로 요청 — 이게 바로 `route.ts`
 - [ ] `app/api/todos/route.ts`의 `POST` 함수: 브라우저 요청을 받아서, 그 안에서 FastAPI에 다시 fetch를 보내는 "중간 다리(프록시)" 역할
 - [ ] `revalidateTag("todos-list")`: Step 5에서 붙여둔 이름표를 가진 캐시를 무효화 → 목록 페이지가 다음에 그려질 때 새 데이터로 다시 불러옴
@@ -605,7 +605,8 @@ export default function TodoInput() {
 - [ ] `e.nativeEvent.isComposing`: 한글은 입력 중 자모가 조합되는 과정에서 Enter 키 이벤트가 의도치 않게 발생할 수 있어, 조합 중이면 무시
 
 ### 테스트 체크리스트
-- [ ] `/todos`에서 텍스트 입력 후 "추가" 클릭 → 새 항목이 페이지 새로고침 없이 나타남
+- [ ] `/todos`의 "추가" 버튼 클릭 → `/todos/new`로 정상 이동(404 아님)
+- [ ] `/todos/new`에서 텍스트 입력 후 "추가" 클릭 → `/todos`로 이동되고 새 항목이 목록에 보임
 - [ ] 빈 값으로 추가 시도 → "할 일을 입력해주세요." 표시, Network 탭에 `POST /api/todos` 요청 자체가 없음
 - [ ] Network 탭: 요청이 `localhost:3000/api/todos`로 가는지 확인 (8000이 아님)
 - [ ] 백엔드를 끄고 추가 시도 → `alert("할 일 추가에 실패했습니다")` 발생 확인
@@ -616,6 +617,8 @@ export default function TodoInput() {
 ## Step 7 — 완료 토글 + 삭제: TodoItem (✍️ 사용자 타이핑)
 
 > AI가 아래 완성 코드를 먼저 설명합니다. `[todoId]` 같은 동적 경로 파일에서 `params`가 **Promise**라는 점(Next.js 15의 변경점)만 AI가 짚어준 뒤, 나머지는 Step 6과 같은 패턴이므로 사용자가 직접 타이핑합니다.
+
+> ⚠️ **2026-06-22 정정**: 처음엔 아래처럼 `app/api/todos/[todoId]/route.ts`(동적 폴더)를 만들었는데, 이건 강의 참고 예제(`fullstack-practice`의 `app/api/posts/[postId]/route.ts`)를 따라간 것이고, **안내문이 보여준 구조에는 `app/api/todos/route.ts` 한 파일만 있고 `[todoId]` 폴더가 없습니다**. 같은 종류의 실수(참고 예제 패턴을 안내문 구조보다 우선시함)가 또 발생한 것. 실제로는 PUT/DELETE 모두 `app/api/todos/route.ts` 하나에 추가했고, "어떤 id"인지는 URL 경로 대신 **PUT은 body의 `id` 필드, DELETE는 `?id=` 쿼리 파라미터**로 받는 방식으로 바꿨습니다. `[todoId]/route.ts`는 삭제. 아래 코드 블록은 이 정정 전 버전이라는 점을 참고하세요 — 실제 코드는 한 단계 아래 "최종 코드" 참고.
 
 ### 작업 내용
 `assignment-3/frontend/app/api/todos/[todoId]/route.ts`:
@@ -725,21 +728,59 @@ export default function TodoItem({ todo }: { todo: Todo }) {
 
 `app/todos/page.tsx`의 `<li>...</li>` 블록을 `<TodoItem key={todo.id} todo={todo} />`로 교체.
 
+### 최종 코드 (정정 후 — `[todoId]` 폴더 없이 `app/api/todos/route.ts`에 추가)
+```ts
+export async function PUT(request: NextRequest) {
+  const { id, ...updateFields } = await request.json();
+
+  const res = await fetch(`${process.env.FASTAPI_URL}/todos/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(updateFields),
+  });
+
+  if (!res.ok) {
+    const error = await res.json();
+    return NextResponse.json({ detail: error.detail }, { status: res.status });
+  }
+
+  const data = await res.json();
+  revalidateTag("todos-list", "max");
+  return NextResponse.json(data);
+}
+
+export async function DELETE(request: NextRequest) {
+  const id = request.nextUrl.searchParams.get("id");
+
+  const res = await fetch(`${process.env.FASTAPI_URL}/todos/${id}`, {
+    method: "DELETE",
+  });
+
+  if (!res.ok) {
+    return NextResponse.json({ detail: "할 일 삭제에 실패했습니다" }, { status: res.status });
+  }
+
+  revalidateTag("todos-list", "max");
+  return new NextResponse(null, { status: 204 });
+}
+```
+`TodoItem.tsx`도 맞춰서: `axios.put("/api/todos", { id: todo.id, completed: !todo.completed })`, `axios.delete(`/api/todos?id=${todo.id}`)`.
+
 ### 구현 체크리스트
-- [ ] `app/api/todos/[todoId]/route.ts`에 `PUT`/`DELETE` 핸들러 작성
-- [ ] `app/todos/TodoItem.tsx` 작성 (토글 버튼 + 삭제 버튼)
+- [ ] `app/api/todos/route.ts`(기존 POST가 있는 그 파일)에 `PUT`/`DELETE` 핸들러 추가 — 새 폴더 만들지 않음
+- [ ] `app/todos/TodoItem.tsx` 작성 (토글 버튼 + 삭제 버튼, id는 body/쿼리로 전달)
 - [ ] `page.tsx`에서 기존 `<li>`를 `<TodoItem>`으로 교체
 
 ### 코드 설명 체크리스트
-- [ ] `{ params }: { params: Promise<{ todoId: string }> }`: Next.js 15부터 동적 라우트(`[todoId]`)의 params는 Promise이므로 `await params`로 꺼내 써야 함 (Step 5/6의 일반 함수와 다른 점)
-- [ ] 파일 경로 `[todoId]`의 폴더 이름이 그대로 `params.todoId` 키 이름이 됨
+- [ ] `const { id, ...updateFields } = await request.json()`: body에서 `id`만 따로 빼고, 나머지(`completed`, `text` 등)는 그대로 FastAPI로 전달
+- [ ] `request.nextUrl.searchParams.get("id")`: URL의 `?id=` 부분을 읽는 방법 (동적 경로 `params` 대신 쿼리스트링 사용)
 - [ ] `TodoItem`이 받는 `todo` prop: Server Component(`page.tsx`)가 이미 fetch해 둔 데이터를 그대로 넘겨받음 — Client Component가 직접 다시 fetch하지 않음
 - [ ] `confirm("정말 삭제할까요?")`: 브라우저 내장 확인창 — 이런 브라우저 API는 Client Component에서만 사용 가능
 - [ ] `disabled={isToggling}`: 요청이 진행 중일 때 버튼을 중복 클릭하지 못하게 막는 로딩 상태 처리
 
 ### 테스트 체크리스트
 - [ ] 토글 버튼 클릭 → 취소선 스타일 변경 + 브라우저 새로고침해도 상태 유지(=서버에 실제로 저장됨, localStorage 아님)
-- [ ] Network 탭: `PUT /api/todos/{id}` 요청이 포트 3000으로 가는지 확인
+- [ ] Network 탭: `PUT /api/todos`(body에 id 포함) 요청이 포트 3000으로 가는지 확인
 - [ ] 삭제 버튼 클릭 → confirm 창 표시, 취소 시 아무 변화 없음, 확인 시 항목 사라짐
 - [ ] `/docs`의 `GET /todos`로 실제 DB에서도 삭제됐는지 재확인
 
@@ -799,7 +840,7 @@ export default function EditTodoForm({ todo }: { todo: Todo }) {
       return;
     }
     try {
-      await axios.put(`/api/todos/${todo.id}`, { text: text.trim() });
+      await axios.put("/api/todos", { id: todo.id, text: text.trim() });
       router.push("/todos");
     } catch {
       alert("수정에 실패했습니다");
@@ -832,7 +873,7 @@ export default function EditTodoForm({ todo }: { todo: Todo }) {
 ### 구현 체크리스트
 - [ ] `app/todos/[todoId]/page.tsx` 작성 (Server Component, 단일 todo 조회)
 - [ ] `app/todos/[todoId]/EditTodoForm.tsx` 작성 (Client Component, 수정 폼)
-- [ ] Step 7에서 만든 `[todoId]/route.ts`의 `PUT` 핸들러를 그대로 재사용 (새 route 불필요)
+- [ ] Step 7에서 `app/api/todos/route.ts`에 추가한 `PUT` 핸들러를 그대로 재사용 (새 route 불필요, body에 `id` 포함해서 호출)
 
 ### 코드 설명 체크리스트
 - [ ] `getTodoById`가 `null`을 반환하면(404) 화면에서 바로 안내 문구 — 에러를 던지지 않고 자연스럽게 처리
