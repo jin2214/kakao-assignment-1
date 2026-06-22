@@ -1,3 +1,8 @@
+from dotenv import load_dotenv
+
+load_dotenv(".env.local")
+
+import os
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import create_engine, select, Integer, String, DateTime
@@ -6,7 +11,8 @@ from pydantic import BaseModel, field_validator
 from datetime import datetime, timezone
 from typing import Optional
 
-DATABASE_URL = "sqlite:///./todos.db"
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./todos.db")
+FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
 engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
@@ -58,7 +64,7 @@ app = FastAPI(title="Todo API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=[FRONTEND_URL],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -121,7 +127,7 @@ def update_todo(todo_id: int, data: TodoUpdate, db: Session = Depends(get_db)):
         db.rollback()
         raise HTTPException(status_code=500, detail=f"할 일 수정 실패: {str(e)}")
     
-    
+
 @app.delete("/todos/{todo_id}", status_code=204)
 def delete_todo(todo_id: int, db: Session = Depends(get_db)):
     todo = db.execute(select(Todo).where(Todo.id == todo_id)).scalar_one_or_none()

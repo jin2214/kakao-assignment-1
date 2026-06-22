@@ -73,16 +73,16 @@
 | 2 | FastAPI 프로젝트 생성 | 2. 백엔드 세팅 | ✅ |
 | 3 | Todo DB 모델 + Pydantic 스키마 | 3. FastAPI CRUD API (모델/스키마 부분) | ✅ |
 | 4 | CRUD 엔드포인트 + CORS | 3. FastAPI CRUD API (엔드포인트 부분, 여기까지 끝나야 3번 완료) | ✅ |
-| 5 | Todo 목록 페이지 (Server Component) + actions.ts | 4. Next.js 페이지 + 5. API Route 연동 (목록 조회 부분) | ⬜ |
-| 6 | Todo 생성 (Client Component + route.ts POST) | 4 + 5 (생성 부분) | ⬜ |
+| 5 | Todo 목록 페이지 (Server Component) + actions.ts | 4. Next.js 페이지 + 5. API Route 연동 (목록 조회 부분) | ✅ |
+| 6 | Todo 생성 (Client Component + route.ts POST) | 4 + 5 (생성 부분) | ✅ |
 | 7 | 완료 토글 + 삭제 (TodoItem) | 4 + 5 (수정/삭제 부분) | ✅ |
 | 8 | 수정 페이지 ([todoId]/page.tsx) | 4 + 5 (수정 페이지 부분) | ✅ |
 | 9 | loading.tsx / error.tsx | 4. Next.js 페이지 (로딩/에러 화면) | ✅ |
-| 10 | 환경변수 분리 | 6. 환경변수 설정 | ⬜ |
+| 10 | 환경변수 분리 | 6. 환경변수 설정 | ✅ |
 | 11 | [도전1] 상태 필터링 | 도전과제 1 | ⬜ |
 | 12 | [도전2] 검색 + 디바운스 | 도전과제 2 | ⬜ |
 
-**현재 위치**: 기본 과제 0~6번 중 "3. FastAPI로 Todo CRUD API 구현하기"까지 완료. 다음은 "4. Next.js에서 Todo 페이지 구현하기".
+**현재 위치**: 과제 안내문의 기본 과제 0~6번(전체 구조 잡기 / 프론트엔드 세팅 / 백엔드 세팅 / FastAPI CRUD API / Next.js 페이지 / API Route 연동 / 환경변수 설정) 모두 완료. 남은 건 도전과제 1(상태 필터링)과 도전과제 2(검색+디바운스) 두 개뿐.
 
 ---
 
