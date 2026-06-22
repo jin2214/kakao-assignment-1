@@ -2,14 +2,15 @@ import Link from "next/link";
 import { getTodos } from "@/app/actions";
 import TodoItem from "./TodoItem";
 import FilterTabs from "./FilterTabs";
+import SearchBox from "./SearchBox";
 
 export default async function TodosPage({
   searchParams,
 }: {
-  searchParams: Promise<{ filter?: string }>;
+  searchParams: Promise<{ filter?: string; search?: string }>;
 }) {
-  const { filter } = await searchParams;
-  const todos = await getTodos(filter);
+  const { filter, search } = await searchParams;
+  const todos = await getTodos(filter, search);
 
   return (
     <main className="w-full max-w-md mx-auto px-4 py-10">
@@ -24,6 +25,7 @@ export default async function TodosPage({
       </div>
 
       <FilterTabs currentFilter={filter ?? "all"} />
+      <SearchBox currentSearch={search ?? ""} />
 
       {todos.length === 0 ? (
         <p className="text-center text-sm text-gray-300 py-10">할 일이 없어요.</p>

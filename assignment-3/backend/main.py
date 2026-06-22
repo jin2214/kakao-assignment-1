@@ -87,6 +87,7 @@ def read_root():
 @app.get("/todos", response_model=list[TodoResponse])
 def get_todos(
     filter: Optional[Literal["all", "active", "completed"]] = Query(None),
+    search: Optional[str] = Query(None),
     db: Session = Depends(get_db),
 ):
     stmt = select(Todo)
@@ -94,6 +95,8 @@ def get_todos(
         stmt = stmt.where(Todo.completed == False)
     elif filter == "completed":
         stmt = stmt.where(Todo.completed == True)
+    if search:
+        stmt = stmt.where(Todo.text.contains(search))
     return db.execute(stmt).scalars().all()
 
 

@@ -5,9 +5,10 @@ export type Todo = {
   created_at: string;
 };
 
-export async function getTodos(filter?: string): Promise<Todo[]> {
+export async function getTodos(filter?: string, search?: string): Promise<Todo[]> {
   const url = new URL(`${process.env.FASTAPI_URL}/todos`);
   if (filter && filter !== "all") url.searchParams.set("filter", filter);
+  if (search) url.searchParams.set("search", search);
 
   const res = await fetch(url.toString(), {
     next: { tags: ["todos-list"] },
@@ -19,6 +20,7 @@ export async function getTodos(filter?: string): Promise<Todo[]> {
 
   return res.json();
 }
+
 
 export async function getTodoById(id: string): Promise<Todo | null> {
   const res = await fetch(`${process.env.FASTAPI_URL}/todos/${id}`, {
