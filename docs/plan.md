@@ -81,8 +81,41 @@
 | 10 | 환경변수 분리 | 6. 환경변수 설정 | ✅ |
 | 11 | [도전1] 상태 필터링 | 도전과제 1 | ✅ |
 | 12 | [도전2] 검색 + 디바운스 | 도전과제 2 | ✅ |
+| 13 | [확장] 2차 과제 날짜 기능 포팅 | 과제 범위 밖, 자율 확장 | ✅ |
 
-**현재 위치**: 과제 안내문의 기본 과제(0~6번) + 도전과제 1, 2 모두 완료. 13단계 내부 계획 전체 종료.
+**현재 위치**: 과제 안내문의 기본 과제(0~6번) + 도전과제 1, 2 모두 완료. 13단계 내부 계획 전체 종료. 이후 사용자 요청으로 2차 과제의 날짜별/주간 뷰 기능까지 추가 구현(Step 13, 평가 범위 밖 자율 확장).
+
+## Step 13 — [확장] 날짜별 Todo + 주간 이동 (과제 범위 밖)
+
+2차 과제(`assignment-2`)의 `DateNav`/`WeekView`/`Stats`/`date` 필드를 3차 과제 아키텍처(URL 쿼리 기반, SQL 필터)로 포팅. 과제 안내문 요구사항이 아닌 추가 학습/연습 목적의 확장.
+
+**아키텍처 매핑:**
+
+| 2차 과제 | 3차 과제 |
+|---|---|
+| `currentDate`/`weekStart` useState | URL 쿼리 `?date=YYYY-MM-DD` (filter/search와 동일 패턴) |
+| `DateNav`/`WeekView`의 `onClick` 핸들러 | `<Link href="/todos?date=...">` — 클라이언트 상태 없음 |
+| `todos.filter(t => t.date === dateStr)` (주간 카운트) | FastAPI `?start=&end=`로 그 주 범위만 가져온 뒤 Server Component에서 요일별 개수 계산 |
+
+**변경된 파일:**
+- 백엔드: `Todo` 모델에 `date` 컬럼 추가 (`String(10)`, `"YYYY-MM-DD"`). 기존 `todos.db`는 컬럼 추가 후 기존 행을 오늘 날짜로 백필(사용자 요청, 데이터 보존). `GET /todos`에 `date`(정확히 일치)/`start`+`end`(주간 범위) 쿼리 파라미터 추가. `TodoCreate`에 `date: str` 필수 필드 추가 (`TodoUpdate`은 그대로 — 수정 시 날짜는 안 바뀜, 2차 과제와 동일).
+- `app/todos/dateUtils.ts`: 2차 과제 `dateUtils.js`를 TS로 포팅 (+ `stringToDate` 신규 추가 — URL 문자열 → `Date` 변환용).
+- `app/actions.ts`: `getTodos`에 `date` 파라미터 추가, `getWeekTodos(start, end)` 신규.
+- `app/todos/page.tsx`: `searchParams.date` 기본값은 오늘. `Promise.all`로 "그날 목록"과 "그 주 전체"를 동시에 fetch. `Stats`용 `dayTodos`는 주간 fetch 결과에서 파생(별도 요청 안 함).
+- `app/todos/DateNav.tsx`, `WeekView.tsx`(요일 오프셋 유지하며 주 이동), `Stats.tsx`: 신규.
+- `app/todos/FilterTabs.tsx`: 탭 클릭 시 `date`/`search`를 잃어버리던 버그 수정 — 이제 세 쿼리 파라미터를 함께 유지.
+- `app/todos/new/page.tsx`, `NewTodoForm.tsx`: 보고 있던 날짜를 `?date=`로 전달받아 그 날짜로 생성, 저장 후 그 날짜 목록으로 복귀.
+- `app/todos/[todoId]/page.tsx`, `EditTodoForm.tsx`: "목록으로"/저장 후 이동이 무조건 오늘이 아니라 `todo.date`로 복귀하도록 수정.
+
+**검증**: Playwright 헤드리스 브라우저로 직접 재현 — 날짜 이동, 필터/검색의 날짜 유지, 신규 생성 시 날짜 귀속, 요일 오프셋을 유지한 주간 이동(수요일 기준 다음 주 이동 시 다음 주 수요일로 이동), 수정 후 원래 날짜로 복귀까지 전부 확인.
+
+**서브에이전트 독립 QA (2026-06-23):** 별도 에이전트로 전체 앱을 다시 처음부터 테스트시켜 4건 발견, 전부 수정·재검증:
+1. `?date=` 값이 형식 자체가 잘못된 문자열(예: `invalid-date-string`)이면 `NaN`이 화면 곳곳(라벨, WeekView 날짜)에 나타나고 React key 중복 콘솔 에러가 다수 발생 — `dateUtils.ts`에 `isValidDateString`(문자열→Date→문자열 왕복 비교) 추가, `page.tsx`/`new/page.tsx`에서 유효하지 않으면 오늘로 폴백.
+2. `?date=2026-13-45`처럼 형식은 맞지만 달력상 불가능한 값은 JS `Date`가 조용히 다른 날짜로 오버플로우 — 위와 같은 `isValidDateString`이 왕복 비교라 이 경우도 함께 걸러짐.
+3. `DateNav`/`WeekView`의 날짜 이동 링크가 `filter`/`search`를 안 보존하던, `FilterTabs`와 같은 종류의 버그(다만 이건 기존에 안 고쳐져 있던 별개 사례) — `buildTodosHref(date, filter, search)` 헬퍼를 `dateUtils.ts`에 추가해 `DateNav`/`WeekView`/`FilterTabs` 세 곳 모두 통일.
+4. 수정 페이지(`/todos/[todoId]`)에 그 할 일의 날짜가 화면에 전혀 안 보임 — `new/page.tsx`의 "X에 추가합니다" 라벨과 통일성 있게 날짜 표시 추가.
+
+테스트 중 생성한 임시 데이터는 에이전트가 직접 정리, DB는 원래 9개 항목 그대로 복원 확인.
 
 ---
 

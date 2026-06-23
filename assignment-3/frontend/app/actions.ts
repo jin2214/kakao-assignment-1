@@ -2,13 +2,15 @@ export type Todo = {
   id: number;
   text: string;
   completed: boolean;
+  date: string;
   created_at: string;
 };
 
-export async function getTodos(filter?: string, search?: string): Promise<Todo[]> {
+export async function getTodos(filter?: string, search?: string, date?: string): Promise<Todo[]> {
   const url = new URL(`${process.env.FASTAPI_URL}/todos`);
   if (filter && filter !== "all") url.searchParams.set("filter", filter);
   if (search) url.searchParams.set("search", search);
+  if (date) url.searchParams.set("date", date);
 
   const res = await fetch(url.toString(), {
     next: { tags: ["todos-list"] },
@@ -28,5 +30,21 @@ export async function getTodoById(id: string): Promise<Todo | null> {
   });
   if (res.status === 404) return null;
   if (!res.ok) throw new Error("할 일을 불러오는 데 실패했습니다");
+  return res.json();
+}
+
+export async function getWeekTodos(start: string, end: string): Promise<Todo[]> {
+  const url = new URL(`${process.env.FASTAPI_URL}/todos`);
+  url.searchParams.set("start", start);
+  url.searchParams.set("end", end);
+
+  const res = await fetch(url.toString(), {
+    next: { tags: ["todos-list"] },
+  });
+
+  if (!res.ok) {
+    throw new Error("주간 할 일을 불러오는 데 실패했습니다");
+  }
+
   return res.json();
 }

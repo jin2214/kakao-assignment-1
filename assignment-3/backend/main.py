@@ -5,7 +5,7 @@ load_dotenv(".env.local")
 import os
 from fastapi import FastAPI, Depends, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy import create_engine, select, Integer, String, DateTime
+from sqlalchemy import create_engine, select, inspect, text, Integer, String, DateTime
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, sessionmaker, Session
 from pydantic import BaseModel, field_validator
 from datetime import datetime, timezone
@@ -26,6 +26,7 @@ class Todo(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     text: Mapped[str] = mapped_column(String(100), nullable=False)
     completed: Mapped[bool] = mapped_column(default=False)
+    date: Mapped[str] = mapped_column(String(10), nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime, default=lambda: datetime.now(timezone.utc)
     )
@@ -33,9 +34,19 @@ class Todo(Base):
 
 Base.metadata.create_all(bind=engine)
 
+# 기존 DB에 date 컬럼이 없으면 추가하고, 기존 행은 오늘 날짜로 채움
+# (Base.metadata.create_all은 없는 테이블만 만들고, 기존 테이블에 컬럼을 추가해주지는 않음)
+existing_columns = [col["name"] for col in inspect(engine).get_columns("todos")]
+if "date" not in existing_columns:
+    today_str = datetime.now().strftime("%Y-%m-%d")
+    with engine.begin() as conn:
+        conn.execute(text("ALTER TABLE todos ADD COLUMN date VARCHAR(10)"))
+        conn.execute(text("UPDATE todos SET date = :today"), {"today": today_str})
+
 
 class TodoCreate(BaseModel):
     text: str
+    date: str
 
     @field_validator("text")
     @classmethod
@@ -56,6 +67,7 @@ class TodoResponse(BaseModel):
     id: int
     text: str
     completed: bool
+    date: str
     created_at: datetime
     model_config = {"from_attributes": True}
 
@@ -88,6 +100,9 @@ def read_root():
 def get_todos(
     filter: Optional[Literal["all", "active", "completed"]] = Query(None),
     search: Optional[str] = Query(None),
+    date: Optional[str] = Query(None),
+    start: Optional[str] = Query(None),
+    end: Optional[str] = Query(None),
     db: Session = Depends(get_db),
 ):
     stmt = select(Todo)
@@ -97,6 +112,10 @@ def get_todos(
         stmt = stmt.where(Todo.completed == True)
     if search:
         stmt = stmt.where(Todo.text.contains(search))
+    if date:
+        stmt = stmt.where(Todo.date == date)
+    elif start and end:
+        stmt = stmt.where(Todo.date >= start, Todo.date <= end)
     return db.execute(stmt).scalars().all()
 
 
@@ -111,7 +130,7 @@ def get_todo(todo_id: int, db: Session = Depends(get_db)):
 @app.post("/todos", response_model=TodoResponse, status_code=201)
 def create_todo(data: TodoCreate, db: Session = Depends(get_db)):
     try:
-        todo = Todo(text=data.text, completed=False)
+        todo = Todo(text=data.text, completed=False, date=data.date)
         db.add(todo)
         db.commit()
         db.refresh(todo)

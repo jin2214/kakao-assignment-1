@@ -17,7 +17,7 @@ export default function EditTodoForm({ todo }: { todo: Todo }) {
     }
     try {
       await axios.put("/api/todos", { id: todo.id, text: text.trim() });
-      router.push("/todos");
+      router.push(`/todos?date=${todo.date}`);
     } catch {
       alert("수정에 실패했습니다");
     }

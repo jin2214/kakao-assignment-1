@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 
-export default function NewTodoForm() {
+export default function NewTodoForm({ date }: { date: string }) {
   const router = useRouter();
   const [text, setText] = useState("");
   const [error, setError] = useState(false);
@@ -15,8 +15,8 @@ export default function NewTodoForm() {
       return;
     }
     try {
-      await axios.post("/api/todos", { text: text.trim() });
-      router.push("/todos");
+      await axios.post("/api/todos", { text: text.trim(), date });
+      router.push(`/todos?date=${date}`);
     } catch {
       alert("할 일 추가에 실패했습니다");
     }
